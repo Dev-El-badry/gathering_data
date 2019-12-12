@@ -24,7 +24,7 @@
             <h1 style="direction: rtl; float:right; padding-bottom: 20px;">مر حبا بك الى موقع استخراج البيانات من موقع سوق</h1>
         
         </div>
-   
+    <p id="msg_download" style="text-align: center; direction: rtl; color:red;display: none;">يتم الان تجميع الداتا .. و تحميله فى ملف اكسيل .... انتظر قليلا</p>
 <div class="alert alert-success"  id="message" role="alert" style="display:none; direction: rtl; text-align: right;">تم تجميع الداتا بنجاح ... و تم تحميل الملف على جهازك</div>
 
     <div class="container h-80">
@@ -41,17 +41,20 @@
           
         </div>
     </div>
-<div class="se-pre-con" style="display: none;">
-    <span style="    position: absolute;
-    bottom: -48px;
-    left: -107px;
-    font-size: 20px;
-    color: #353b48;
-    direction: rtl;
-    float: right;
-    width: 310px;">برجاء الانتظار يتم الان تحميل الملف ...</span>
-</div>
+    <div class="clearfix"></div>
+        <div id="circle" style="display: none;">
+            <div class="loader">
+                <div class="loader">
+                    <div class="loader">
+                        <div class="loader">
 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
 
     </div>
     <script
@@ -90,12 +93,14 @@
     });
 
     function show_loading() {
-        $('.se-pre-con').css('display', 'block');
+        $('#circle').css('display', 'block');
+        $('#msg_download').css('display', 'block');
         $('.search_icon').css('display', 'none')
     }
 
     function hidden_loading() {
-        $('.se-pre-con').css('display', 'none');
+        $('#circle').css('display', 'none');
+        $('#msg_download').css('display', 'none');
         $('.search_icon').css('display', 'flex')
     }
 

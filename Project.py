@@ -48,11 +48,11 @@ class Project(Seller, OthrItem) :
         self.wb.create_sheet(title="items")
         self.sh.sheet_properties.tabColor = "1072BA"
 
-        # Let's create a style template for the header row
-        # header_line1 = NamedStyle(name="header")
-        # header_line1.font = Font(bold=True)
-        # header_line1.border = Border(bottom=Side(border_style="thin"))
-        # header_line1.alignment = Alignment(horizontal="center", vertical="center")
+        ##Let's create a style template for the header row
+        header_line1 = NamedStyle(name="header")
+        header_line1.font = Font(bold=True)
+        header_line1.border = Border(bottom=Side(border_style="thin"))
+        header_line1.alignment = Alignment(horizontal="center", vertical="center")
 
         # pattern fill for cell
         # redFill = PatternFill(start_color='FFFF0000',
@@ -67,10 +67,10 @@ class Project(Seller, OthrItem) :
             self.sh.cell(row=1, column=c).value = i
             c += 1
 
-        # Now let's apply this to all first row (header) cells
-        # header_row = self.sh[1]
-        # for cell in header_row:
-        #     cell.style = header_line1
+        ##Now let's apply this to all first row (header) cells
+        header_row = self.sh[1]
+        for cell in header_row:
+            cell.style = header_line1
 
         return
 
