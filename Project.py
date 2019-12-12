@@ -1,6 +1,3 @@
-
-import urllib
-from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import requests
 from Seller import Seller
@@ -52,10 +49,10 @@ class Project(Seller, OthrItem) :
         self.sh.sheet_properties.tabColor = "1072BA"
 
         # Let's create a style template for the header row
-        header_line = NamedStyle(name="header")
-        header_line.font = Font(bold=True)
-        header_line.border = Border(bottom=Side(border_style="thin"))
-        header_line.alignment = Alignment(horizontal="center", vertical="center")
+        # header_line1 = NamedStyle(name="header")
+        # header_line1.font = Font(bold=True)
+        # header_line1.border = Border(bottom=Side(border_style="thin"))
+        # header_line1.alignment = Alignment(horizontal="center", vertical="center")
 
         # pattern fill for cell
         # redFill = PatternFill(start_color='FFFF0000',
@@ -71,9 +68,9 @@ class Project(Seller, OthrItem) :
             c += 1
 
         # Now let's apply this to all first row (header) cells
-        header_row = self.sh[1]
-        for cell in header_row:
-            cell.style = header_line
+        # header_row = self.sh[1]
+        # for cell in header_row:
+        #     cell.style = header_line1
 
         return
 
