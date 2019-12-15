@@ -1,0 +1,218 @@
+{% extends 'index.html' %}
+{% block styles %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
+{% block content %}
+
+
+<header>
+    <div class="container bg-info p-5 ">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link active" href="{{url_for('dashboard')}}">Home <span
+                            class="sr-only">(current)</span></a>
+                    <a class="nav-item nav-link" href="{{url_for('index')}}">Search Control</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+<!---->
+<main>
+    <div class="container my-5">
+        <div class="card-body text-center">
+            <h4 class="card-title">Accounts On Website</h4>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+           
+                {% for message in messages %}
+                    <div class="alert alert-primary" role="alert">
+                    {{message}}
+                    </div>
+                {% endfor %}
+           
+            {% endif %}
+            {% endwith %}
+
+
+            {% if form.errors %}
+            {% for error in form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{form.errors.get(error, "")}}
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+        </div>
+        <div class="card">
+            <button id="add__new__list" type="button" class="btn btn-success position-absolute" data-toggle="modal"
+                data-target=".bd-example-modal-lg"><i class="fas fa-plus"></i> Add a new Account</button>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        
+                        <th scope="col">username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Permission</th>
+                        <th scope="col">Times</th>
+                        <th scope="col">Edit List </th>
+                    </tr>
+                </thead>
+                <tbody>
+  
+                    {% for  user in users %}
+                <tr>
+                   
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.group_id == 1 %}
+                        <span class="badge badge-primary">Admin</span>
+                        {% else %}
+                        <span class="badge badge-secondary">Normal User </span>
+                        {% endif %}
+
+                    </td>
+                    <td>{{ user.times }}</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary update_user"  data-id="{{ user.id }}" href="#"><i class="far fa-edit"></i> edit</a>
+                        <a class="btn btn-sm btn-danger remove_user"  data-id="{{ user.id }}" href="#"><i class="fas fa-trash-alt"></i> delete</a>
+                    </td>
+                   
+                </tr>
+                    
+                    {% endfor %}
+       
+           
+                </tbody>
+            </table>
+        </div>
+        <!-- Large modal -->
+
+
+        <div class="modal fade bd-example-modal-lg" id="model_user" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="card-body text-center">
+                        <h4 class="card-title mdl-title">Add New Account</h4>
+                        <p class="card-text" style="color: red;">all fields are required</p>
+                    </div>
+                    <div class=" card col-8 offset-2 my-2 p-3">
+                        <form method="POST">
+                            {{form.hidden_tag()}}
+
+                            <input type="hidden" name="user_id" value="" id="user_id" />
+                            <div class="form-group">
+                                {{ form.username.label }}
+                                {{ form.username(class_='form-control') }}
+                                
+                                
+                            </div>
+                            <div class="form-group">
+                                {{ form.email.label }}
+                                {{ form.email(class_='form-control') }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.times.label }}
+                                {{ form.times(class_='form-control') }}
+                            </div>
+                            <div id="passwords-fields">
+                                <div class="form-group">
+                                    {{ form.password.label }}
+                                    {{ form.password(class_='form-control') }}
+                                </div>
+
+                                <div class="form-group">
+                                    {{ form.confirm.label }}
+                                    {{ form.confirm(class_='form-control') }}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                {{ form.group_id.label }}
+                                {{ form.group_id(class_='custom-select custom-select-lg mb-3') }}
+                            </div>
+                            <div class="form-group text-center">
+                                {{form.submit(class_='btn btn-block btn-primary')}}
+
+                                <button type="button" style="display: none;" class="btn btn-block btn-danger" id="close_model">Close</button>
+                            </div>
+
+                           
+                        </form>
+                        <a href="#" class="change_password" style="margin: 0 auto; display: none;" >Change Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!---->
+
+<!---->
+<footer>
+    <div class="container bg-info p-5">
+
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>
+    var url_target = Flask.url_for('update_user');
+    var url_target_del = Flask.url_for('delete_user')
+    $('.update_user').click(function(e) {
+        e.preventDefault()
+        //add class show to show model
+        $('#close_model').css('display', 'block');
+        $('.change_password').css('display', 'block');
+        $('#model_user').addClass('show').css('display', 'block');
+        $('#passwords-fields').remove();
+        $('.mdl-title').text('Update Account');
+        var id_post = $(this).data('id'); //id user
+
+        $.post(url_target,{'id_post': id_post}, function(data) {
+            data_json = JSON.parse(data)
+            
+            $('#username').val(data_json['username']);
+            $('#email').val(data_json['email']);
+            $('#group_id').val(data_json['group_id'])
+            $('#times').val(data_json['times'])
+            $('#user_id').val(id_post)
+
+        });
+    });
+
+    $('#close_model').click(function() {
+        $('#model_user').removeClass('show').css('display', 'none');
+    });
+
+    $('.remove_user').click(function(e) {
+        e.preventDefault();
+
+        if(confirm('Are You Sure From Delete User?')) {
+            user_id = $(this).data('id');
+            $.post(url_target_del, {'user_id': user_id}, function(data) {
+                window.location.reload()
+            });
+        }
+    });
+</script>
+{% endblock %}

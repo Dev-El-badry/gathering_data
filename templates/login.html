@@ -1,0 +1,57 @@
+{% extends 'index.html' %}
+{% block styles %}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('static', filename='login_styles.css') }}"> 
+{% endblock %}
+{% block content %}
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Tabs Titles -->
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+        {% endfor %}
+        
+        {% endif %}
+        {% endwith %}
+        <!-- Icon -->
+        <div class="fadeIn first">
+            <!-- <img src="https://www.b-cube.in/wp-content/uploads/2014/05/aditya-300x177.jpg" id="icon" alt="User Icon" /> -->
+            <h1 style="direction: rtl;">مرحبا بك </h1>
+            {% if form.errors %}
+                {% for error in form.errors %}
+                <div class="alert alert-danger" role="alert">
+                {{form.errors.get(error, "")}} 
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <!-- Login Form -->
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ form.email(class_="fadeIn second") }}
+            {{ form.password(class_="fadeIn third") }}
+            <div class="form-group">
+            {{ form.submit(class_="fadeIn fourth") }}
+            </div>
+        </form>
+
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+            Powered By <a class="underlineHover" href="#">MidRule</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

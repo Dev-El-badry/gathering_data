@@ -40,6 +40,11 @@ class Project(Seller, OthrItem) :
         price = priceItem.getDataFromURL()
         return price
 
+    def get_othr_name_of_seller(self, url) :
+        othr_seller = OthrItem(url)
+        seller_name = othr_seller.getUserName()
+        return seller_name
+
     def setup_excel(self) :
         #setup excel
         
@@ -48,18 +53,18 @@ class Project(Seller, OthrItem) :
         self.wb.create_sheet(title="items")
         self.sh.sheet_properties.tabColor = "1072BA"
 
-        ##Let's create a style template for the header row
-        header_line1 = NamedStyle(name="header")
-        header_line1.font = Font(bold=True)
-        header_line1.border = Border(bottom=Side(border_style="thin"))
-        header_line1.alignment = Alignment(horizontal="center", vertical="center")
+        # ##Let's create a style template for the header row
+        # header_line1 = NamedStyle(name="header")
+        # header_line1.font = Font(bold=True)
+        # header_line1.border = Border(bottom=Side(border_style="thin"))
+        # header_line1.alignment = Alignment(horizontal="center", vertical="center")
 
         # pattern fill for cell
         # redFill = PatternFill(start_color='FFFF0000',
         #                 end_color='FFFF0000',
         #                 fill_type='solid')
 
-        headers = ['اسم المنتج','link-href',  'سعر المنتج', 'السعر المنافس', 'اسم البائع','صورة المنتج']
+        headers = ['اسم المنتج','link-href',  'سعر المنتج', 'السعر المنافس', 'اسم البائع','اسم البائع المنافس','صورة المنتج']
 
 
         c = 1
@@ -68,9 +73,9 @@ class Project(Seller, OthrItem) :
             c += 1
 
         ##Now let's apply this to all first row (header) cells
-        header_row = self.sh[1]
-        for cell in header_row:
-            cell.style = header_line1
+        # header_row = self.sh[1]
+        # for cell in header_row:
+        #     cell.style = header_line1
 
         return
 
@@ -92,13 +97,15 @@ class Project(Seller, OthrItem) :
             url_item = item.find(class_="quickViewAction")['href']
             new_url = url_item.replace(url_item[-2], 'io')
             priceItem = self.get_othr_price_of_item(new_url)
+            seller_name_othr_item = self.get_othr_name_of_seller(new_url)
             seller_of_item_name = self.get_seller_name(url_item)
+            
 
             if item_title is not None :
                 _item_title = item_title.get_text()
             if item_price is not None :
                 _item_price = item_price.get_text()
-            list = [_item_title,url_item, _item_price, priceItem,  seller_of_item_name, item_img]
+            list = [_item_title,url_item, _item_price, priceItem,  seller_of_item_name, seller_name_othr_item, item_img]
             
             
             
