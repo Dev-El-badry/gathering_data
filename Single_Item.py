@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
-class Seller() :
+class Single_Item() :
 
     def __init__(self, url):
         self.url = url
@@ -9,5 +9,9 @@ class Seller() :
     def getDataFromURL(self):
         response = requests.get(self.url) 
         soup = BeautifulSoup(response.text, 'lxml')
+        print('before seller name')
         sellerName = soup.find(class_='unit-seller-link').find('a').get_text()
-        return sellerName
+        print('after seller name')
+        
+
+        return {'seller_name': sellerName}

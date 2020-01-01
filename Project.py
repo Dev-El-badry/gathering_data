@@ -1,54 +1,55 @@
 from bs4 import BeautifulSoup
 import requests
-from Seller import Seller
+from Single_Item import Single_Item
 from OthrItem import OthrItem
 from openpyxl import Workbook
 from openpyxl.styles import Font, Color, Alignment, Border, Side, colors, NamedStyle, PatternFill
-import time
-import os
+import time, os, re, math
 
 
-
-class Project(Seller, OthrItem) :
+class Project(Single_Item, OthrItem):
 
     #empty  list
     __items_list = []
+    empty_list = []
     #Get Unixsttamp
     unix_dt = int(time.time())
 
     wb = Workbook()
     sh = wb.active
 
-    def __init__(self, item_search):
-        self.item_search = item_search
+    def __init__(self, seller_name):
+        self.seller_name = seller_name
 
         #start work get html
-        self.main_function()
+        self.start_main_function()
     
-    def __get_target_url(self):
-        target_url = "https://egypt.souq.com/eg-ar/"+self.item_search+"/s"
+    #GET data from pagination and lazy loadin 
+    #pgaintor range (1,52)
+    #max number: 3120
+
+
+
+    def __get_target_url(self, num=1):
+        target_url = "https://egypt.souq.com/eg-ar/" + \
+            self.seller_name+"/s?section=2&page=" + str(num)
         return target_url
 
-    def get_seller_name(self, url) :
+    def get_data_from_single_item(self, url) :
         
-        seller = Seller(url)
-        selller_name = seller.getDataFromURL()
-        return selller_name
-
-    def get_othr_price_of_item(self, url) :
-        priceItem = OthrItem(url)
-        price = priceItem.getDataFromURL()
-        return price
+        single_item = Single_Item(url)
+        data = single_item.getDataFromURL()
+        return data
 
     def get_othr_name_of_seller(self, url) :
-        othr_seller = OthrItem(url)
-        seller_name = othr_seller.getUserName()
-        return seller_name
+        othr_seller = OthrItem(url, self.seller_name)
+        data = othr_seller.get_data_belong_to_seller_name()
+        return data
 
     def setup_excel(self) :
         #setup excel
         
-        self.sh.sheet_view.rightToLeft=True
+        #self.sh.sheet_view.rightToLeft=True
         self.sh.title = "Report"
         self.wb.create_sheet(title="items")
         self.sh.sheet_properties.tabColor = "1072BA"
@@ -64,8 +65,18 @@ class Project(Seller, OthrItem) :
         #                 end_color='FFFF0000',
         #                 fill_type='solid')
 
-        headers = ['اسم المنتج','link-href',  'سعر المنتج', 'السعر المنافس', 'اسم البائع','اسم البائع المنافس','صورة المنتج']
+        #  list_data = {
+                #     'item_title': item_title.get_text(),
+                #     'url_item': url_item,
+                #     'item_price': item_price.get_text(),
+                #     'item_seller_name': seller_of_item_name,
+                #     'ur_name': ur_name,
+                #     'ur_offer': ur_offer
+                # }
 
+        headers = ['Item ID', 'Item Title', 'href-url', 'Item Price','Competitor Seller', 'Your Name', 'Your Price OFfer']
+
+       
 
         c = 1
         for i in headers:
@@ -79,51 +90,158 @@ class Project(Seller, OthrItem) :
 
         return
 
-    def main_function(self) :
+    def get_count_pagination(self, num) :
+        res = int(num) / 60
+        return math.ceil(res)
+
+    def get_numbers_from_text(self, string):
+        str = string
+        x = re.findall(r'\d+', string)
+        nums = ''.join(x)
+        return nums
+    
+    def start_main_function(self) :
+        const_number = 3060
+        lst_data = []
         target_url = self.__get_target_url()
         response = requests.get(target_url)
         soup = BeautifulSoup(response.text, 'lxml')
-        items = soup.find_all(class_="single-item")
 
+        #Some Usfull Data
+        num_items = soup.find(class_="top").find(class_="total").get_text()
+
+        number = self.get_numbers_from_text(num_items)
+
+        if int(number) < const_number:
+            num_pagination = self.get_count_pagination(number)
+        else:
+            num_pagination = 51
+
+
+        print('===========')
+        print("pagination = {}".format(num_pagination))
+        print('=============')
         #call setup excel
         self.setup_excel()
-        r=2
-        i=1
-        for item in items:
-            item_img = item.find('img',  {'class': 'img-size-medium'}).attrs.get("data-src")
-            
-            item_title = item.find(class_='itemTitle')
-            item_price = item.find(class_='itemPrice')
-            url_item = item.find(class_="quickViewAction")['href']
-            new_url = url_item.replace(url_item[-2], 'io')
-            priceItem = self.get_othr_price_of_item(new_url)
-            seller_name_othr_item = self.get_othr_name_of_seller(new_url)
-            seller_of_item_name = self.get_seller_name(url_item)
-            
+        for x in range(1,num_pagination+1) :
+            new_target_url = self.__get_target_url(x)
+            result = self.main_function(new_target_url)
+            lst_data.append(result)
+            print(lst_data)
 
-            if item_title is not None :
-                _item_title = item_title.get_text()
-            if item_price is not None :
-                _item_price = item_price.get_text()
-            list = [_item_title,url_item, _item_price, priceItem,  seller_of_item_name, seller_name_othr_item, item_img]
-            
-            
-            
-            for lst1 in list :
-                if i > len(list) :
-                    i = 1
 
-                self.sh.cell(row=r, column=i).value = lst1
-                i += 1
-            r += 1
 
         self.save_file_excel()
 
+        print('end')
+
+        return self.empty_list
+       
+
+
+    def main_function(self, target_url) :
+        #declration local varables 
+        ur_name = ''
+        ur_offer = ''
+        data = []
+        
+        
+        try:
+            response = requests.get(target_url)
+        except requests.exceptions.ConnectionError:
+            r.status_code = "Connection refused"
+        soup = BeautifulSoup(response.text, 'lxml')
+       
+        items = soup.find_all(class_="single-item")
+
+      
+        print(len(items))
+        print('=========================')
+        r=2
+        i=1
+        count = 0
+        count_x= 1
+        count_y= 1
+        list_data = {}
+        for item in range(len(items)):
+            print('start loop')
+           
+            itemID = items[item].find().parent.attrs['data-ean']
+            
+            item_title = items[item].find(class_='itemTitle')
+            item_price = items[item].find(class_='itemPrice')
+            url_item = items[item].find(class_="quickViewAction")['href']
+            new_url = url_item.replace(url_item[-2], 'io')
+            # priceItem = self.get_othr_price_of_item(new_url)
+            print('endData')
+            #THE SELLER SHOW IN SINGLE ITEM (SHOW IN SEARCH)
+            single_item_data = self.get_data_from_single_item(url_item)
+            print('sellername')
+            #
+            print('===============')
+            print(count_x)
+            count_x = count_x + 1
+            print('===============')
+            if(single_item_data['seller_name'] != self.seller_name):
+                print(itemID)
+                count = count + 1
+                print(count)
+                res_data = self.get_othr_name_of_seller(new_url)
+                ur_name = res_data['seller_name']
+                ur_offer = res_data['offer_price']
+
+                list_data = {
+                    
+                    'item_title': item_title.get_text(),
+                    'url_item': url_item,
+                    'item_price': item_price.get_text(),
+                    'item_seller_name': single_item_data['seller_name'],
+                    'ur_name': ur_name,
+                    'ur_offer': ur_offer,
+                    'nw_id_item': itemID
+                }
+
+                data.append(list_data)
+                print('===============')
+                print(data)
+                print('===============')
+
+                self.start_write_in_excel(i, r, list_data)
+                r += 1
+            else :
+                print('===============')
+                print('out of loop')
+                print('===============')
+                print('===============')
+                print(count_y)
+                count_y = count_y + 1
+                print('===============')
+
+
+        print(count) 
+        print(count_x)  
+        print(count_y)   
+        print('start')
+        return data
+        
+
+    def start_write_in_excel(self, i, r, list_data) :
+        list = [list_data['nw_id_item'], list_data['item_title'], list_data['url_item'],
+                list_data['item_price'], list_data['item_seller_name'], list_data['ur_name'], list_data['ur_offer']]
+        print('start')
+        for lst1 in list:
+            if i > len(list):
+                i = 1
+
+            self.sh.cell(row=r, column=i).value = lst1
+            i += 1
+        print('end')
 
     def save_file_excel(self) :
-
+        print('start excel')
         filename = 'Report-'+str(self.unix_dt)+'.xlsx'
         home_path = os.path.join(os.environ['HOMEPATH'], 'Desktop')
+        print('pre excel')
         #Saving File
         self.wb.save(os.path.join(home_path, filename))
 

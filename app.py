@@ -24,19 +24,20 @@ db = SQLAlchemy(app)
 #Migrate
 migrate = Migrate(app, db)
 user_data = dict()
+global seller_search
 
 @app.route('/', methods=['GET', 'POST'])
 def index() :
     group_id = session.get('group_id') # return 0 OR 1
 
-    if session['IS_LOGIN'] == False :
+    if session.get('IS_LOGIN') == False or session.get('IS_LOGIN') is None :
         return redirect(url_for('signIn'))
 
     if request.method == 'POST' :
         num = _get_num_times()
         if num > 0 :
-            item_search = request.values.get('word_search')
-            Project(item_search)
+            seller_search = request.values.get('word_search')
+            pro = Project(seller_search)
             update_times()
             return 'well done'
        

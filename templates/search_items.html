@@ -12,7 +12,6 @@
 {% block content %}
 
 <div class="container">
-
         <div class="row" style="margin-top: 20px;">
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
                 <div class="btn-group" role="group">
@@ -68,6 +67,7 @@
             </div>
         </div>
         </div>
+      
         <div class="clearfix"></div>
         <div id="circle" style="display: none;">
             <div class="loader">
@@ -80,7 +80,8 @@
                 </div>
             </div>
         </div>
-    
+
+
     
     
 </div>
@@ -99,7 +100,7 @@
             } else {
                show_loading();
                 $.post(url_target, {word_search: word_search}, function (data) {
-                    
+                    console.log(data)
                     if (data == 'well done') {
                          
                         hidden_loading();
@@ -111,6 +112,7 @@
                         hidden_loading();
                         alert('لقد نفذ عدد مرات البحث')
                     }
+                   // hidden_loading();
                 }).fail(function () {
                     hidden_loading();
                     alert("error");

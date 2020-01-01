@@ -1,0 +1,47 @@
+EXCEL SHEET (SHOW DATA):
+
+- ITEM ID
+- ITEM NAME
+- ITEM PRICE
+- ITEM SELLER ( SELLER WHO SHOW)
+THEN 
+
+=> Enter to single item and get the SELLER NAME ( what he looked for )
+=> AND show the price he's offered
+
+- ITEM MY_SELLER
+- ITEM PRICE MY_SELLER
+
+
+
+UPDATE NOTES
+DELETE SPACE BETWEEN WORDS
+AND TRIM STRING
+
+
+
+//PAGINATION
+max pages = 51
+single page contain = 60 items
+
+total = 3060 items
+
+seller x = 8,704 items
+
+seller x > max page pass
+
+
+seller y = 1,656 items
+seller y < max page
+number of pagination = 27.6 top 28
+
+
+ //process
+ url + number => new page => we goning
+
+ EDIT TARGET URL in start main function
+
+
+// AJAX
+Progress Bar
+Count Files
