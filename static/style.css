@@ -1,13 +1,13 @@
-
-    body,html{
+body,
+html {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
     background: #f1f1f1 !important;
-    }
+}
 
-    .searchbar{
+.searchbar {
     margin-bottom: auto;
     margin-top: auto;
     height: 60px;
@@ -15,33 +15,33 @@
     border-radius: 30px;
     padding: 10px;
     direction: rtl;
-    }
+}
 
-    .search_input{
+.search_input {
     color: white;
     border: 0;
     outline: 0;
     background: none;
     width: 0;
-    caret-color:transparent;
+    caret-color: transparent;
     line-height: 40px;
     transition: width 0.4s linear;
-    }
+}
 
-    .searchbar > .search_input{
+.searchbar>.search_input {
     padding: 0 10px;
     width: 450px;
-    caret-color:red;
+    caret-color: red;
     transition: width 0.4s linear;
-    }
+}
 
-    .searchbar > .search_icon{
+.searchbar>.search_icon {
     background: white;
     color: #e74c3c;
     float: left;
-    }
+}
 
-    .search_icon{
+.search_icon {
     height: 40px;
     width: 40px;
     float: right;
@@ -49,13 +49,13 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    color:white;
-    text-decoration:none;
-    }
+    color: white;
+    text-decoration: none;
+}
 
 .se-pre-con {
     position: fixed;
-        left: 908px;
+    left: 908px;
     top: 366px;
     width: 8%;
     height: 10%;
@@ -65,23 +65,24 @@
 
 #circle {
     position: absolute;
-    bottom: 12%;
+    bottom: 5%;
     left: 50%;
-    transform: translate(-50%,-50%);
-	width: 150px;
-    height: 150px;	
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
 }
 
 .loader {
     width: calc(100% - 0px);
-	height: calc(100% - 0px);
-	border: 8px solid #162534;
-	border-top: 8px solid #09f;
-	border-radius: 50%;
-	animation: rotate 5s linear infinite;
+    height: calc(100% - 0px);
+    border: 8px solid #162534;
+    border-top: 8px solid #09f;
+    border-radius: 50%;
+    animation: rotate 5s linear infinite;
 }
 
 @keyframes rotate {
-100% {transform: rotate(360deg);}
-} 
-
+    100% {
+        transform: rotate(360deg);
+    }
+}

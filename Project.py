@@ -9,6 +9,9 @@ import time, os, re, math
 
 class Project(Single_Item, OthrItem):
 
+    #empty data array
+    data_result = []
+    
     #empty  list
     __items_list = []
     empty_list = []
@@ -111,7 +114,7 @@ class Project(Single_Item, OthrItem):
         num_items = soup.find(class_="top").find(class_="total").get_text()
 
         number = self.get_numbers_from_text(num_items)
-
+        print(number)
         if int(number) < const_number:
             num_pagination = self.get_count_pagination(number)
         else:
@@ -126,10 +129,14 @@ class Project(Single_Item, OthrItem):
         for x in range(1,num_pagination+1) :
             new_target_url = self.__get_target_url(x)
             result = self.main_function(new_target_url)
-            lst_data.append(result)
-            print(lst_data)
+        
+        print('===========')
+        print(self.data_result)
+        print('=============')
 
-
+        i=1
+        r=2
+        self.start_write_in_excel2(i,r)
 
         self.save_file_excel()
 
@@ -143,7 +150,6 @@ class Project(Single_Item, OthrItem):
         #declration local varables 
         ur_name = ''
         ur_offer = ''
-        data = []
         
         
         try:
@@ -157,8 +163,7 @@ class Project(Single_Item, OthrItem):
       
         print(len(items))
         print('=========================')
-        r=2
-        i=1
+       
         count = 0
         count_x= 1
         count_y= 1
@@ -190,24 +195,25 @@ class Project(Single_Item, OthrItem):
                 ur_name = res_data['seller_name']
                 ur_offer = res_data['offer_price']
 
+                # list = [list_data['nw_id_item'], list_data['item_title'], list_data['url_item'],
+                # list_data['item_price'], list_data['item_seller_name'], list_data['ur_name'], list_data['ur_offer']]
+
                 list_data = {
-                    
+                    'nw_id_item': itemID,
+
                     'item_title': item_title.get_text(),
                     'url_item': url_item,
                     'item_price': item_price.get_text(),
                     'item_seller_name': single_item_data['seller_name'],
                     'ur_name': ur_name,
-                    'ur_offer': ur_offer,
-                    'nw_id_item': itemID
+                    'ur_offer': ur_offer
+                    
                 }
 
-                data.append(list_data)
-                print('===============')
-                print(data)
-                print('===============')
+                self.data_result.append(list_data)
+                
 
-                self.start_write_in_excel(i, r, list_data)
-                r += 1
+               
             else :
                 print('===============')
                 print('out of loop')
@@ -221,9 +227,21 @@ class Project(Single_Item, OthrItem):
         print(count) 
         print(count_x)  
         print(count_y)   
-        print('start')
-        return data
+        print('start') 
         
+    def start_write_in_excel2(self, i,r) :
+        print('start write in excel')
+
+        for list in self.data_result :
+            for lst in list :
+                if i > len(list):
+                    i = 1
+
+                self.sh.cell(row=r, column=i).value = list[lst]
+                i +=1 
+            r+=1
+        
+        print('end write in excel')
 
     def start_write_in_excel(self, i, r, list_data) :
         list = [list_data['nw_id_item'], list_data['item_title'], list_data['url_item'],

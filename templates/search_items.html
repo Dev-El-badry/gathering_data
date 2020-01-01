@@ -1,138 +1,133 @@
-{% extends 'index.html' %}
-
-{% block styles %} 
+{% extends 'index.html' %} {% block styles %}
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-    integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {% endblock %}
-
-{% block content %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> {% endblock %} {% block content %}
 
 <div class="container">
-        <div class="row" style="margin-top: 20px;">
-            <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                <div class="btn-group" role="group">
-                    <a href="{{ url_for('logout') }}">
+    <div class="row" style="margin-top: 20px;">
+        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+                <a href="{{ url_for('logout') }}">
                     <button type="button" class="btn btn-danger">تسجيل الخروج</button>
-                    </a>
-                </div>
-                <div class="btn-group" role="group">
-                  
-                </div>
+                </a>
+            </div>
+            <div class="btn-group" role="group">
+
+            </div>
             {% if session.get('group_id') == 1 %}
-                <div class="btn-group" role="group">
-                    <a href="{{url_for('dashboard')}}">
+            <div class="btn-group" role="group">
+                <a href="{{url_for('dashboard')}}">
                     <button type="button" class="btn btn-primary">الذهاب للوحة التحكم</button>
 
-                    </a>
-                </div>
-                {% endif %}
+                </a>
             </div>
+            {% endif %}
         </div>
+    </div>
 
-     
-<div class="row" style="margin-top: 20px;">
+
+    <div class="row" style="margin-top: 20px;">
         <div class="jumbotron" style="    height: 180px;
         background-color: transparent;
-        margin-right: 84px;">
-    
-            <h1 style="direction: rtl; float:right; padding-bottom: 20px;" class="page-header">مر حبا بك: {{ session.get('username')}} <br> فى موقع استخراج البيانات من موقع سوق دوت كوم
+        margin-right: 84px;    margin-bottom: 0px;
+    padding-bottom: 0;">
+
+            <h1 style="direction: rtl; float:right; padding-bottom: 20px;    margin-top: 0;
+            font-size: 25px;" class="page-header">مر حبا بك: {{ session.get('username')}} <br> فى موقع استخراج البيانات من موقع سوق دوت كوم
             </h1>
-           
+
         </div>
-     
-        </div>
-        <div class="row" style="margin-top: 20px;">
-        <p id="msg_download" style="text-align: center; direction: rtl; color:red;display: none;">يتم الان تجميع الداتا .. و
-            تحميله فى ملف اكسيل .... انتظر قليلا</p>
+
+    </div>
+    <div class="row" style="margin-top: 20px;">
+        <p id="msg_download" style="text-align: center; direction: rtl; color:red;display: none;">يتم الان تجميع الداتا .. و تحميله فى ملف اكسيل .... انتظر قليلا</p>
         <div class="alert alert-success" id="message" role="alert" style="display:none; direction: rtl; text-align: right;">
             تم تجميع الداتا بنجاح ... و تم تحميل الملف على جهازك</div>
-    
+
         <div class="container">
             <div class="d-flex justify-content-center h-80">
-    
+
                 <div class="searchbar">
-                    <input class="search_input" type="text" name=""
-                        placeholder="اكتب اسم المنتج او البائع الذى تريد البحث عنه...">
+                    <input class="search_input" type="text" name="" placeholder="اكتب اسم المنتج او البائع الذى تريد البحث عنه...">
                     <a href="#" class="search_icon"><i class="fas fa-search"></i></a>
-    
-    
+
+
                 </div>
                 <div class="clearfix"></div>
-    
-    
+
+
             </div>
         </div>
-        </div>
-      
-        <div class="clearfix"></div>
-        <div id="circle" style="display: none;">
+    </div>
+
+    <div class="clearfix"></div>
+    <div id="circle" style="display: none;">
+        <div class="loader">
             <div class="loader">
                 <div class="loader">
                     <div class="loader">
-                        <div class="loader">
-    
-                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 
-    
-    
+
+
 </div>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    
-    <script>
-        url_target = Flask.url_for('index');
-        $('.search_icon').click(function (event) {
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<script>
+    url_target = Flask.url_for('index');
+    $('.search_icon').click(function(event) {
 
 
-            event.preventDefault();
-            word_search = $('.search_input').val()
-            if (word_search == '') {
-                alert('Must Fill Search Input')
-            } else {
-               show_loading();
-                $.post(url_target, {word_search: word_search}, function (data) {
-                    console.log(data)
-                    if (data == 'well done') {
-                         
-                        hidden_loading();
-                        $("#message").css('display', 'block');
-                        setInterval(() => {
-                            $("#message").css('display', 'none');
-                        }, 5000);
-                    } else {
-                        hidden_loading();
-                        alert('لقد نفذ عدد مرات البحث')
-                    }
-                   // hidden_loading();
-                }).fail(function () {
+        event.preventDefault();
+        word_search = $('.search_input').val()
+        if (word_search == '') {
+            alert('Must Fill Search Input')
+        } else {
+            show_loading();
+            $.post(url_target, {
+                word_search: word_search
+            }, function(data) {
+                console.log(data)
+                if (data == 'well done') {
+
                     hidden_loading();
-                    alert("error");
-                });
-            }
-
-        });
-
-        function show_loading() {
-            $('#circle').css('display', 'block');
-            $('#msg_download').css('display', 'block');
-            $('.search_icon').css('display', 'none')
+                    $("#message").css('display', 'block');
+                    setInterval(() => {
+                        $("#message").css('display', 'none');
+                    }, 5000);
+                } else {
+                    hidden_loading();
+                    alert('لقد نفذ عدد مرات البحث')
+                }
+                // hidden_loading();
+            }).fail(function() {
+                hidden_loading();
+                alert("error");
+            });
         }
 
-        function hidden_loading() {
-            $('#circle').css('display', 'none');
-            $('#msg_download').css('display', 'none');
-            $('.search_icon').css('display', 'flex')
-        }
+    });
 
-    </script>
+    function show_loading() {
+        $('#circle').css('display', 'block');
+        $('#msg_download').css('display', 'block');
+        $('.search_icon').css('display', 'none')
+    }
+
+    function hidden_loading() {
+        $('#circle').css('display', 'none');
+        $('#msg_download').css('display', 'none');
+        $('.search_icon').css('display', 'flex')
+    }
+</script>
 
 {% endblock %}
