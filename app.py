@@ -1,12 +1,13 @@
 from flask import Flask, render_template, url_for, redirect, request, session, flash
-from forms import SignForm, RegisterForm
+from oop.forms import SignForm, RegisterForm
 from flask_jsglue import JSGlue
-from Project import Project
+from oop.Project import Project
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 from flask_bcrypt import Bcrypt
 import json
+import sys
 #from flask.ext.bcrypt import Bcrypt
 
 
@@ -42,6 +43,9 @@ def index() :
             return 'well done'
        
     return render_template('search_items.html', group_id=group_id)
+
+
+
 
 def isset(var) :
     return var in locals() or var in globals()

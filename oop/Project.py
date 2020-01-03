@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
-from Single_Item import Single_Item
-from OthrItem import OthrItem
+from oop.Single_Item import Single_Item
+from oop.OthrItem import OthrItem
 from openpyxl import Workbook
 from openpyxl.styles import Font, Color, Alignment, Border, Side, colors, NamedStyle, PatternFill
 import time, os, re, math
@@ -11,6 +11,13 @@ class Project(Single_Item, OthrItem):
 
     #empty data array
     data_result = []
+
+    # Declartion Varables show in console
+    const_pagination_num = 0
+    pagination_num_now = 0
+    const_items_num = 0
+    items_num_now_download = 0
+    items_num_now_not_download = 0
     
     #empty  list
     __items_list = []
@@ -114,25 +121,23 @@ class Project(Single_Item, OthrItem):
         num_items = soup.find(class_="top").find(class_="total").get_text()
 
         number = self.get_numbers_from_text(num_items)
-        print(number)
         if int(number) < const_number:
             num_pagination = self.get_count_pagination(number)
+            self.const_items_num = number
         else:
             num_pagination = 51
+            self.const_items_num = const_number
 
+        self.const_pagination_num = num_pagination
+        
 
-        print('===========')
-        print("pagination = {}".format(num_pagination))
-        print('=============')
+        
         #call setup excel
         self.setup_excel()
         for x in range(1,num_pagination+1) :
+            self.pagination_num_now = x
             new_target_url = self.__get_target_url(x)
             result = self.main_function(new_target_url)
-        
-        print('===========')
-        print(self.data_result)
-        print('=============')
 
         i=1
         r=2
@@ -140,7 +145,7 @@ class Project(Single_Item, OthrItem):
 
         self.save_file_excel()
 
-        print('end')
+        
 
         return self.empty_list
        
@@ -161,15 +166,13 @@ class Project(Single_Item, OthrItem):
         items = soup.find_all(class_="single-item")
 
       
-        print(len(items))
-        print('=========================')
        
         count = 0
         count_x= 1
         count_y= 1
         list_data = {}
         for item in range(len(items)):
-            print('start loop')
+            
            
             itemID = items[item].find().parent.attrs['data-ean']
             
@@ -178,19 +181,14 @@ class Project(Single_Item, OthrItem):
             url_item = items[item].find(class_="quickViewAction")['href']
             new_url = url_item.replace(url_item[-2], 'io')
             # priceItem = self.get_othr_price_of_item(new_url)
-            print('endData')
+            
             #THE SELLER SHOW IN SINGLE ITEM (SHOW IN SEARCH)
             single_item_data = self.get_data_from_single_item(url_item)
-            print('sellername')
-            #
-            print('===============')
-            print(count_x)
-            count_x = count_x + 1
-            print('===============')
+            
             if(single_item_data['seller_name'] != self.seller_name):
-                print(itemID)
-                count = count + 1
-                print(count)
+                
+                self.items_num_now_download = self.items_num_now_download + 1
+
                 res_data = self.get_othr_name_of_seller(new_url)
                 ur_name = res_data['seller_name']
                 ur_offer = res_data['offer_price']
@@ -215,19 +213,20 @@ class Project(Single_Item, OthrItem):
 
                
             else :
-                print('===============')
-                print('out of loop')
-                print('===============')
-                print('===============')
-                print(count_y)
-                count_y = count_y + 1
-                print('===============')
+                self.items_num_now_not_download = self.items_num_now_not_download + 1
+
+            print('===========')
+            print("pagination = {} / {} ".format(self.const_pagination_num, self.pagination_num_now))
+            print('=============')
 
 
-        print(count) 
-        print(count_x)  
-        print(count_y)   
-        print('start') 
+            print('===========')
+            print("items = not show => {} / show => {} / from => {}  ".format(self.items_num_now_download,
+                                            self.items_num_now_not_download, self.const_items_num))
+            print('=============')
+
+
+      
         
     def start_write_in_excel2(self, i,r) :
         print('start write in excel')
@@ -256,10 +255,10 @@ class Project(Single_Item, OthrItem):
         print('end')
 
     def save_file_excel(self) :
-        print('start excel')
+       
         filename = 'Report-'+str(self.unix_dt)+'.xlsx'
         home_path = os.path.join(os.environ['HOMEPATH'], 'Desktop')
-        print('pre excel')
+        print('Finish')
         #Saving File
         self.wb.save(os.path.join(home_path, filename))
 

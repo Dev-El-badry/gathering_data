@@ -103,7 +103,7 @@
                     $("#message").css('display', 'block');
                     setInterval(() => {
                         $("#message").css('display', 'none');
-                    }, 5000);
+                    }, 10000);
                 } else {
                     hidden_loading();
                     alert('لقد نفذ عدد مرات البحث')
@@ -116,6 +116,8 @@
         }
 
     });
+
+
 
     function show_loading() {
         $('#circle').css('display', 'block');
